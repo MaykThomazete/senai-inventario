@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SENAI Jaú — Controle de Ativos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#visao"><b>SENAI <i>//</i> JAÚ</b><small>CT EDWARD SÁVIO • DEV. SISTEMAS</small></a>
+  <nav id="nav"><a href="#visao">Visão Geral</a><a href="#inventario">Inventário</a><a href="#qrCheckout">Baixa QR</a><a href="#emprestimos">Empréstimos</a><a href="#logs">Logs</a></nav>
+  <button class="btn red" id="btnNovo"><span>+ NOVO ITEM</span></button>
+</header>
+<div class="ticker"><div id="ticker"></div></div>
+
+<section class="hero" id="visao">
+  <p class="tag mono">SYS.INV // V2.6 &nbsp;•&nbsp; JAÚ/SP &nbsp;•&nbsp; LAB 02-03</p>
+  <h1>CONTROLE DE ATIVOS <em>//</em><br>LAB DEV. SISTEMAS</h1>
+  <p class="sub">Centro de Treinamento Edward Sávio — Jaú/SP. Telemetria em tempo real dos equipamentos do Curso Técnico em Desenvolvimento de Sistemas.</p>
+  <div class="kpis" id="kpis"></div>
+</section>
+
+<section class="sec" id="inventario">
+  <h2><span class="mono">01 // HARDWARE</span>INVENTÁRIO</h2>
+  <div class="filters">
+    <input id="q" placeholder="Buscar nome ou SNI-XXXX…" autocomplete="off">
+    <select id="fCat"><option>Todos</option><option>iMacs</option><option>TVs</option><option>Notebooks</option><option>Workstations</option><option>Kits IoT / Arduino</option><option>Periféricos</option><option>Servidores & Redes</option></select>
+    <select id="fSt"><option>Todos</option><option>Disponível</option><option>Em Uso</option><option>Manutenção</option></select>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="sec" id="qrCheckout">
+  <h2><span class="mono">02 // CHECK-OUT</span>BAIXA POR QR CODE</h2>
+  <p class="qr-help">Leia o QR code do patrimônio para registrar a retirada do equipamento por um estudante.</p>
+  <div class="qr-panel">
+    <div class="qr-actions">
+      <button class="btn red" id="btnQrStart" type="button"><span>INICIAR LEITOR</span></button>
+      <button class="btn" id="btnQrStop" type="button" hidden><span>PARAR CÂMERA</span></button>
+    </div>
+    <div id="qrReader"></div>
+    <p class="qr-status" id="qrStatus" role="status" aria-live="polite">O QR code deve conter o número de patrimônio do item.</p>
+    <form class="qr-manual" id="qrManualForm">
+      <label for="qrPatrimonio">Ou digite o patrimônio</label>
+      <div>
+        <input id="qrPatrimonio" name="patrimonio" placeholder="Ex.: 1365094" autocomplete="off" required pattern="(?:SNI-\d{4}-\d{3}|\d{7})">
+        <button class="btn" type="submit"><span>LOCALIZAR ITEM</span></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="sec dark" id="emprestimos">
+  <h2><span class="mono">03 // PERIFÉRICOS EM CAMPO</span>EMPRÉSTIMOS ATIVOS</h2>
+  <div id="loans" class="loans"></div>
+</section>
+
+<section class="sec" id="logs">
+  <h2><span class="mono">04 // TELEMETRIA</span>AUDIT LOG</h2>
+  <ul class="log mono" id="log"></ul>
+</section>
+
+<footer><b>SENAI Jaú — Centro de Treinamento Edward Sávio</b> | Curso Técnico em Desenvolvimento de Sistemas<span class="mono">SYS.INV // V2.6 — TURMA DEV. SISTEMAS © 2026</span></footer>
+
+<div class="veil" id="veil"></div>
+<aside class="drawer" id="drawer">
+  <button class="x" id="btnX" aria-label="Fechar">×</button>
+  <h3 id="dTitle"></h3>
+  <form id="form">
+    <label>Patrimônio<input name="patrimonio" placeholder="SNI-2026-040 ou 1365094" required pattern="(?:SNI-\d{4}-\d{3}|\d{7})"></label>
+    <label>Equipamento<input name="nome" required></label>
+    <label>Categoria<select name="categoria"><option>Workstations</option><option>iMacs</option><option>TVs</option><option>Notebooks</option><option>Kits IoT / Arduino</option><option>Periféricos</option><option>Servidores & Redes</option></select></label>
+    <label>Localização<input name="localizacao" placeholder="Bancada 04 - Lab 02" required></label>
+    <label>Status<select name="status"><option>Disponível</option><option>Em Uso</option><option>Manutenção</option></select></label>
+    <label>Responsável<input name="responsavel" value="Estoque Central"></label>
+    <p class="err" id="err"></p>
+    <button class="btn red" type="submit"><span>SALVAR</span></button>
+  </form>
+  <form id="loanForm" hidden>
+    <label>Patrimônio identificado<input id="loanPatrimonio" name="patrimonio" readonly></label>
+    <label>Aluno (Dev. Sistemas)<input name="aluno" placeholder="Nome do aluno" required></label>
+    <p class="err" id="loanErr"></p>
+    <button class="btn red" type="submit"><span>CONFIRMAR CHECK-OUT</span></button>
+  </form>
+</aside>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

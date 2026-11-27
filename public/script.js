@@ -15,10 +15,17 @@ function render() {
   $('#ticker').innerHTML = (() => { const s = `<span>● LAB 02 ONLINE &nbsp;//&nbsp; ${n('Disponível')} DISPONÍVEIS &nbsp;//&nbsp; ${n('Em Uso')} EM USO &nbsp;//&nbsp; ${n('Manutenção')} EM MANUTENÇÃO &nbsp;//&nbsp; SYS.INV V2.6 &nbsp;//&nbsp; CT EDWARD SÁVIO — JAÚ/SP &nbsp;//&nbsp; </span>`; return s.repeat(8); })();
   const q = $('#q').value.toLowerCase(), c = $('#fCat').value, s = $('#fSt').value;
   const F = A.filter(a => (c === 'Todos' || a.categoria === c) && (s === 'Todos' || a.status === s) && (a.nome + a.patrimonio).toLowerCase().includes(q));
-  $('#grid').innerHTML = F.length ? F.map(a => `<article class="card"><span class="mono cat">${esc(a.categoria)}</span><div class="id">${esc(a.patrimonio)}</div><h4>${esc(a.nome)}</h4>
-    <p>📍 ${esc(a.localizacao)}<br>👤 ${esc(a.responsavel)}</p><span class="badge ${cls(a.status)}">${a.status}</span>
-    <div class="acts">${a.status === 'Disponível' ? `<button class="btn sm" data-a="out" data-id="${a.id}"><span>CHECK-OUT</span></button>` : a.status === 'Em Uso' ? `<button class="btn sm" data-a="ret" data-id="${a.id}"><span>DEVOLVER</span></button>` : ''}
-    <button class="btn sm" data-a="edit" data-id="${a.id}"><span>EDITAR</span></button><button class="btn sm" data-a="del" data-id="${a.id}"><span>EXCLUIR</span></button></div></article>`).join('') : `<div class="empty"><p class="mono">${A.length ? 'Nenhum ativo encontrado' : 'Nenhum item cadastrado'}</p>${A.length ? '' : '<button class="btn red" data-a="add"><span>+ ADICIONAR ITEM</span></button>'}</div>`;
+  const categories = [...new Set(F.map(a => a.categoria))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  $('#grid').innerHTML = F.length ? categories.map(category => {
+    const assets = F.filter(a => a.categoria === category);
+    return `<section class="inventory-group"><h3>${esc(category)}<span>${assets.length} ${assets.length === 1 ? 'ATIVO' : 'ATIVOS'}</span></h3><div class="grid">${assets.map(a => `<article class="card"><div class="id">${esc(a.patrimonio)}</div><h4>${esc(a.nome)}</h4>
+      ${a.categoria === 'iMacs' ? '<img class="asset-image" src="/imac.jpeg" alt="iMac">' : ''}
+      ${a.categoria === 'TVs' ? '<img class="asset-image" src="/tv.avif" alt="Televisão">' : ''}
+      ${a.categoria === 'Notebooks' ? '<img class="asset-image" src="/notebook.avif" alt="Notebook">' : ''}
+      <p>📍 ${esc(a.localizacao)}<br>👤 ${esc(a.responsavel)}</p><span class="badge ${cls(a.status)}">${a.status}</span>
+      <div class="acts">${a.status === 'Disponível' ? `<button class="btn sm" data-a="out" data-id="${a.id}"><span>CHECK-OUT</span></button>` : a.status === 'Em Uso' ? `<button class="btn sm" data-a="ret" data-id="${a.id}"><span>DEVOLVER</span></button>` : ''}
+      <button class="btn sm" data-a="edit" data-id="${a.id}"><span>EDITAR</span></button><button class="btn sm" data-a="del" data-id="${a.id}"><span>EXCLUIR</span></button></div></article>`).join('')}</div></section>`;
+  }).join('') : `<div class="empty"><p class="mono">${A.length ? 'Nenhum ativo encontrado' : 'Nenhum item cadastrado'}</p>${A.length ? '' : '<button class="btn red" data-a="add"><span>+ ADICIONAR ITEM</span></button>'}</div>`;
   const L = A.filter(a => a.status === 'Em Uso');
   $('#loans').innerHTML = L.length ? L.map(a => `<div class="loan"><span class="mono">${esc(a.patrimonio)}</span><b>${esc(a.responsavel)}</b><p>${esc(a.nome)}</p><button class="btn sm" data-a="ret" data-id="${a.id}"><span>REGISTRAR DEVOLUÇÃO</span></button></div>`).join('') : '<p class="mono">Nenhum empréstimo ativo</p>';
   $('#log').innerHTML = S.logs.map(l => `<li><span>${new Date(l.ts.replace(' ', 'T') + 'Z').toLocaleString('pt-BR')}</span><b>${l.tipo}</b><span>${esc(l.patrimonio)}</span><span>${esc(l.detalhe)}</span></li>`).join('');
